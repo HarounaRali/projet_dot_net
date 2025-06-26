@@ -1,0 +1,281 @@
+@model StatistiquesViewModel
+@{
+    ViewData["Title"] = "Statistiques Détaillées";
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4">
+        <i class="fas fa-chart-bar"></i> Statistiques Détaillées
+    </h2>
+
+    <!-- Cartes de statistiques principales -->
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h4>@Model.TotalColis</h4>
+                    <small>Total Colis</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h4>@Model.ColisEnAttente</h4>
+                    <small>En Attente</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h4>@Model.ColisEnCours</h4>
+                    <small>En Cours</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h4>@Model.ColisLivres</h4>
+                    <small>Livrés</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-secondary text-white">
+                <div class="card-body text-center">
+                    <h4>@Model.TotalClients</h4>
+                    <small>Clients</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-dark text-white">
+                <div class="card-body text-center">
+                    <h4>@Model.TotalLivreurs</h4>
+                    <small>Livreurs</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphiques -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-pie"></i> Répartition des colis par statut</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="statutChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-line"></i> Évolution des colis par mois</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="evolutionChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top livreurs -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-trophy"></i> Top 5 des livreurs les plus performants</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.TopLivreurs != null && Model.TopLivreurs.Count > 0)
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Rang</th>
+                                        <th>Livreur</th>
+                                        <th>Colis livrés</th>
+                                        <th>Performance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int rang = 1;
+                                        int maxColis = 0;
+                                        foreach (var livreur in Model.TopLivreurs)
+                                        {
+                                            if (livreur.ColisLivres > maxColis)
+                                            {
+                                                maxColis = livreur.ColisLivres;
+                                            }
+                                        }
+                                    }
+                                    @foreach (var livreur in Model.TopLivreurs)
+                                    {
+                                        var pourcentage = maxColis > 0 ? (livreur.ColisLivres * 100.0 / maxColis) : 0;
+                                        <tr>
+                                            <td>
+                                                @if (rang == 1)
+                                                {
+                                                    <span class="badge bg-warning">🥇</span>
+                                                }
+                                                else if (rang == 2)
+                                                {
+                                                    <span class="badge bg-secondary">🥈</span>
+                                                }
+                                                else if (rang == 3)
+                                                {
+                                                    <span class="badge bg-warning">🥉</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-light text-dark">@rang</span>
+                                                }
+                                            </td>
+                                            <td><strong>@livreur.Nom</strong></td>
+                                            <td>@livreur.ColisLivres</td>
+                                            <td>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar bg-success" style="width: @pourcentage%">
+                                                        @pourcentage.ToString("F0")%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        rang++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Aucune donnée disponible pour les livreurs</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Informations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6>Taux de livraison</h6>
+                        @{
+                            var tauxLivraison = Model.TotalColis > 0 ? (Model.ColisLivres * 100.0 / Model.TotalColis) : 0;
+                        }
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" style="width: @tauxLivraison%">
+                                @tauxLivraison.ToString("F1")%
+                            </div>
+                        </div>
+                        <small class="text-muted">@Model.ColisLivres livrés sur @Model.TotalColis colis</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Colis en attente</h6>
+                        @{
+                            var tauxAttente = Model.TotalColis > 0 ? (Model.ColisEnAttente * 100.0 / Model.TotalColis) : 0;
+                        }
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-warning" style="width: @tauxAttente%">
+                                @tauxAttente.ToString("F1")%
+                            </div>
+                        </div>
+                        <small class="text-muted">@Model.ColisEnAttente colis en attente</small>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-lightbulb"></i>
+                        <strong>Conseil :</strong> Surveillez régulièrement les colis en attente pour optimiser la livraison.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Graphique des statuts
+        var ctxStatut = document.getElementById('statutChart').getContext('2d');
+        new Chart(ctxStatut, {
+            type: 'doughnut',
+            data: {
+                labels: ['En attente', 'En cours', 'Livré'],
+                datasets: [{
+                    data: [@Model.ColisEnAttente, @Model.ColisEnCours, @Model.ColisLivres],
+                    backgroundColor: ['#ffc107', '#17a2b8', '#28a745'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Graphique d'évolution
+        var ctxEvolution = document.getElementById('evolutionChart').getContext('2d');
+        var evolutionData = @Html.Raw(Json.Serialize(Model.ColisParMois));
+        
+        if (evolutionData && evolutionData.length > 0) {
+            var labels = evolutionData.map(function(item) { return item.mois; });
+            var data = evolutionData.map(function(item) { return item.count; });
+
+            new Chart(ctxEvolution, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Nombre de colis',
+                        data: data,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        } else {
+            // Afficher un message si pas de données
+            var canvas = document.getElementById('evolutionChart');
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#f8f9fa';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#6c757d';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Aucune donnée disponible', canvas.width/2, canvas.height/2);
+        }
+    </script>
+} 

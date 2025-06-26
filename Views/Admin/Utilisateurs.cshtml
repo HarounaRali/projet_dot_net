@@ -1,0 +1,139 @@
+@model IEnumerable<UserViewModel>
+@{
+    ViewData["Title"] = "Gestion des Utilisateurs";
+}
+
+<div class="container-fluid">
+    <h2 class="mb-4">
+        <i class="fas fa-users-cog"></i> Gestion des Utilisateurs
+    </h2>
+
+    <!-- Messages de succès/erreur -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Liste des Utilisateurs (@Model.Count())</h5>
+        </div>
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="text-center py-4">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Aucun utilisateur enregistré</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Email</th>
+                                <th>Rôles</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@user.Email</strong>
+                                    </td>
+                                    <td>
+                                        @foreach (var role in user.Roles)
+                                        {
+                                            @if (role == "Admin")
+                                            {
+                                                <span class="badge bg-danger">@role</span>
+                                            }
+                                            else if (role == "Livreur")
+                                            {
+                                                <span class="badge bg-primary">@role</span>
+                                            }
+                                            else if (role == "Client")
+                                            {
+                                                <span class="badge bg-success">@role</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">@role</span>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (user.Roles.Contains("Admin"))
+                                        {
+                                            <form asp-action="RetirerAdmin" asp-route-userId="@user.Id" method="post" style="display:inline">
+                                                <button type="submit" class="btn btn-warning btn-sm" 
+                                                        onclick="return confirm('Êtes-vous sûr de vouloir retirer le rôle administrateur à cet utilisateur ?')">
+                                                    <i class="fas fa-user-minus"></i> Retirer Admin
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="PromouvoirAdmin" asp-route-userId="@user.Id" method="post" style="display:inline">
+                                                <button type="submit" class="btn btn-success btn-sm" 
+                                                        onclick="return confirm('Êtes-vous sûr de vouloir promouvoir cet utilisateur en administrateur ?')">
+                                                    <i class="fas fa-user-plus"></i> Promouvoir Admin
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Informations -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-info-circle"></i> Informations</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-shield-alt text-danger"></i> <strong>Admin :</strong> Accès complet à toutes les fonctionnalités</li>
+                        <li><i class="fas fa-truck text-primary"></i> <strong>Livreur :</strong> Gestion des colis à livrer</li>
+                        <li><i class="fas fa-user text-success"></i> <strong>Client :</strong> Suivi de ses propres colis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-exclamation-triangle"></i> Attention</h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-shield-alt"></i>
+                        <strong>Sécurité :</strong> Soyez prudent lors de l'attribution du rôle administrateur. 
+                        Les administrateurs ont accès à toutes les fonctionnalités du système.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

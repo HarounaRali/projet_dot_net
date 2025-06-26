@@ -1,0 +1,126 @@
+@model IEnumerable<SuiviLivraison.Models.Colis>
+@{
+    ViewData["Title"] = "Mes Colis à Livrer";
+}
+<h2>Mes Colis à Livrer</h2>
+
+<div class="row mb-3">
+    <div class="col">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Les colis sont automatiquement assignés au livreur le plus proche. Vous pouvez accepter ou rejeter les colis assignés.
+        </div>
+    </div>
+    <div class="col-auto">
+        <a asp-action="ColisDisponibles" class="btn btn-outline-primary">
+            <i class="fas fa-search"></i> Voir tous les colis disponibles
+        </a>
+    </div>
+</div>
+
+<table class="table">
+    <caption>Liste des colis assignés au livreur</caption>
+    <thead>
+        <tr>
+            <th scope="col">Description</th>
+            <th scope="col">Client</th>
+            <th scope="col">Statut</th>
+            <th scope="col">Date d'envoi</th>
+            <th scope="col">Départ</th>
+            <th scope="col">Arrivée</th>
+            <th scope="col">Livraison estimée</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (!Model.Any())
+    {
+        <tr>
+            <td colspan="7" class="text-center">Aucun colis à livrer.</td>
+        </tr>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <tr class="@(item.Statut == "Assigné" ? "table-warning" : item.Statut == "En cours" ? "table-primary" : "")">
+                <td>@item.Description</td>
+                <td>@item.Client?.Nom</td>
+                <td>
+                    <span class="badge @(item.Statut == "Assigné" ? "bg-warning" : item.Statut == "En cours" ? "bg-primary" : "bg-secondary")">
+                        @item.Statut
+                    </span>
+                </td>
+                <td>@DateTimeHelper.FormatLocalTime(item.DateEnvoi)</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.AdresseDepart))
+                    {
+                        <small>@item.AdresseDepart</small>
+                    }
+                    else
+                    {
+                        <small class="text-muted">@DateTimeHelper.FormatCoordinates(item.LatitudeDepart, item.LongitudeDepart)</small>
+                    }
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.AdresseArrivee))
+                    {
+                        <small>@item.AdresseArrivee</small>
+                    }
+                    else
+                    {
+                        <small class="text-muted">@DateTimeHelper.FormatCoordinates(item.LatitudeArrivee, item.LongitudeArrivee)</small>
+                    }
+                </td>
+                <td>
+                    @if (item.HeureLivraisonEstimee.HasValue)
+                    {
+                        <span class="text-success">
+                            <i class="fas fa-clock"></i>
+                            @DateTimeHelper.FormatLocalTime(item.HeureLivraisonEstimee)
+                        </span>
+                    }
+                    else
+                    {
+                        <small class="text-muted">À calculer</small>
+                    }
+                </td>
+                <td>
+                    @if (item.Statut == "Assigné")
+                    {
+                        <form asp-action="Accepter" asp-route-id="@item.Id" method="post" style="display:inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="fas fa-check"></i> Accepter
+                            </button>
+                        </form>
+                        <form asp-action="Rejeter" asp-route-id="@item.Id" method="post" style="display:inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-times"></i> Rejeter
+                            </button>
+                        </form>
+                    }
+                    else if (item.Statut == "En cours")
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
+                            <i class="fas fa-edit"></i> Mettre à jour
+                        </a>
+                        @if (item.HeureLivraisonEstimee.HasValue && DateTime.UtcNow > item.HeureLivraisonEstimee.Value)
+                        {
+                            <form asp-action="Reussie" asp-route-id="@item.Id" method="post" style="display:inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-success btn-sm">Réussie</button>
+                            </form>
+                            <form asp-action="PasReussi" asp-route-id="@item.Id" method="post" style="display:inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-danger btn-sm">Pas Réussi</button>
+                            </form>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table> 

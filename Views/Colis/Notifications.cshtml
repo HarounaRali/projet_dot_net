@@ -1,0 +1,22 @@
+@model IEnumerable<SuiviLivraison.Models.Notification>
+@{
+    ViewData["Title"] = "Mes Notifications";
+}
+<h2>Mes Notifications</h2>
+@if (!Model.Any())
+{
+    <p>Aucune notification pour le moment.</p>
+}
+else
+{
+    <ul class="list-group">
+    @foreach (var notif in Model)
+    {
+        <li class="list-group-item">
+            <strong>@notif.Message</strong> <br />
+            <small>@notif.DateEnvoi</small>
+        </li>
+    }
+    </ul>
+}
+<a asp-action="MesColis" class="btn btn-secondary">Retour à mes colis</a> 

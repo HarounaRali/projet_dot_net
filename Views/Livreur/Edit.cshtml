@@ -1,0 +1,28 @@
+@model SuiviLivraison.Models.Colis
+@{
+    ViewData["Title"] = "Mettre à jour le colis";
+}
+<h2>Mettre à jour le colis</h2>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Statut" class="control-label"></label>
+        <input asp-for="Statut" class="form-control" />
+        <span asp-validation-for="Statut" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Latitude" class="control-label"></label>
+        <input asp-for="Latitude" class="form-control" />
+        <span asp-validation-for="Latitude" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Longitude" class="control-label"></label>
+        <input asp-for="Longitude" class="form-control" />
+        <span asp-validation-for="Longitude" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="MesColisALivrer" class="btn btn-secondary">Retour</a>
+</form>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 
