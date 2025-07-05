@@ -69,10 +69,7 @@ public class ColisController : Controller
                         }
                     }
                 }
-                else
-                {
-                    ModelState.AddModelError("AdresseDepart", "Adresse de départ non reconnue. Veuillez saisir une adresse valide ou utiliser la carte.");
-                }
+
             }
         }
         // Géocodage du point d'arrivée si adresse fournie
@@ -96,21 +93,13 @@ public class ColisController : Controller
                         }
                     }
                 }
-                else
-                {
-                    ModelState.AddModelError("AdresseArrivee", "Adresse d'arrivée non reconnue. Veuillez saisir une adresse valide ou utiliser la carte.");
-                }
+
             }
         }
-        // Validation stricte des coordonnées
-        if (colis.LatitudeDepart < -90 || colis.LatitudeDepart > 90 || colis.LongitudeDepart < -180 || colis.LongitudeDepart > 180)
-        {
-            ModelState.AddModelError("LatitudeDepart", "Latitude ou longitude de départ invalide.");
-        }
-        if (colis.LatitudeArrivee < -90 || colis.LatitudeArrivee > 90 || colis.LongitudeArrivee < -180 || colis.LongitudeArrivee > 180)
-        {
-            ModelState.AddModelError("LatitudeArrivee", "Latitude ou longitude d'arrivée invalide.");
-        }
+
+
+
+
         if (!ModelState.IsValid)
         {
             return View(colis);
@@ -180,6 +169,69 @@ public class ColisController : Controller
         {
             colis.Statut = "Annulé";
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Le colis a été annulé avec succès.";
+        }
+        return RedirectToAction("MesColis");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemettreEnCours(int id)
+    {
+        var userId = _userManager.GetUserId(User);
+        var client = await _context.Clients.FirstOrDefaultAsync(c => c.IdentityUserId == userId);
+        if (client == null)
+        {
+            return NotFound("Client non trouvé.");
+        }
+        var colis = await _context.Colis.FirstOrDefaultAsync(c => c.Id == id && c.ClientId == client.Id);
+        if (colis == null)
+        {
+            return NotFound("Colis non trouvé ou accès refusé.");
+        }
+        if (colis.Statut == "Annulé")
+        {
+            colis.Statut = "En attente";
+            await _context.SaveChangesAsync();
+            
+            // Réassigner le colis à un livreur
+            await _assignmentService.AssignColisToNearestLivreurAsync(colis);
+            
+            TempData["Success"] = "Le colis a été remis en cours et sera réassigné à un livreur.";
+        }
+        return RedirectToAction("MesColis");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Supprimer(int id)
+    {
+        var userId = _userManager.GetUserId(User);
+        var client = await _context.Clients.FirstOrDefaultAsync(c => c.IdentityUserId == userId);
+        if (client == null)
+        {
+            return NotFound("Client non trouvé.");
+        }
+        var colis = await _context.Colis.FirstOrDefaultAsync(c => c.Id == id && c.ClientId == client.Id);
+        if (colis == null)
+        {
+            return NotFound("Colis non trouvé ou accès refusé.");
+        }
+        if (colis.Statut == "Annulé")
+        {
+            // Supprimer les notifications associées
+            var notifications = await _context.Notifications.Where(n => n.ColisId == id).ToListAsync();
+            _context.Notifications.RemoveRange(notifications);
+            
+            // Supprimer le colis
+            _context.Colis.Remove(colis);
+            await _context.SaveChangesAsync();
+            
+            TempData["Success"] = "Le colis a été supprimé définitivement.";
+        }
+        else
+        {
+            TempData["Error"] = "Seuls les colis annulés peuvent être supprimés.";
         }
         return RedirectToAction("MesColis");
     }

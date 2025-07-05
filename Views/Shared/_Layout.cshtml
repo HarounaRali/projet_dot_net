@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SuiviLivraison.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    
+    <!-- CSS spécifiques par rôle -->
+    @if (User.IsInRole("Admin"))
+    {
+        <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    }
+    @if (User.IsInRole("Livreur"))
+    {
+        <link rel="stylesheet" href="~/css/livreur.css" asp-append-version="true" />
+    }
+    @if (User.IsInRole("Client"))
+    {
+        <link rel="stylesheet" href="~/css/client.css" asp-append-version="true" />
+    }
 </head>
 <body>
     <header>
@@ -26,6 +40,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
                                 <i class="fas fa-home"></i> Accueil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Demo">
+                                <i class="fas fa-rocket"></i> Démo
                             </a>
                         </li>
                         
@@ -75,6 +94,11 @@
                                         <i class="fas fa-box"></i> Mes colis à livrer
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Livreur" asp-action="ColisDisponibles">
+                                        <i class="fas fa-list"></i> Colis disponibles
+                                    </a>
+                                </li>
                             }
                             
                             @if (User.IsInRole("Client"))
@@ -84,7 +108,19 @@
                                         <i class="fas fa-box"></i> Mes colis
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Colis" asp-action="Create">
+                                        <i class="fas fa-plus"></i> Nouveau colis
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Colis" asp-action="Notifications">
+                                        <i class="fas fa-bell"></i> Notifications
+                                    </a>
+                                </li>
                             }
+                            
+
                         }
                     </ul>
                     <partial name="_LoginPartial" />
@@ -92,20 +128,44 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    @if (ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index")
+    {
+        <main role="main">
             @RenderBody()
         </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
+    }
+    else
+    {
         <div class="container">
-            &copy; 2025 - SuiviLivraison - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
+
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2025 - SuiviLivraison - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+    }
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/notifications.js" asp-append-version="true"></script>
+    
+    <!-- JavaScript spécifiques par rôle -->
+    @if (User.IsInRole("Admin"))
+    {
+        <script src="~/js/admin.js" asp-append-version="true"></script>
+    }
+    @if (User.IsInRole("Livreur"))
+    {
+        <script src="~/js/livreur.js" asp-append-version="true"></script>
+    }
+    @if (User.IsInRole("Client"))
+    {
+        <script src="~/js/client.js" asp-append-version="true"></script>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -3,60 +3,196 @@
     ViewData["Title"] = "Dashboard Admin";
 }
 
-<div class="container-fluid">
-    <h2 class="mb-4">Dashboard Administrateur</h2>
-
-    <!-- Messages de succès/erreur -->
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    <!-- Cartes de statistiques -->
+<div class="container-fluid py-4">
+    <!-- Header -->
     <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
+        <div class="col-12">
+            <div class="card bg-gradient-primary text-white border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Total Colis</h5>
-                    <h2 class="card-text">@Model.TotalColis</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-white">
-                <div class="card-body">
-                    <h5 class="card-title">En Cours</h5>
-                    <h2 class="card-text">@Model.ColisEnCours</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Livrés</h5>
-                    <h2 class="card-text">@Model.ColisLivres</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h5 class="card-title">Clients</h5>
-                    <h2 class="card-text">@Model.TotalClients</h2>
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="display-6 fw-bold mb-2">
+                                <i class="fas fa-tachometer-alt me-3"></i>
+                                Dashboard Administrateur
+                            </h1>
+                            <p class="lead mb-0">Vue d'ensemble de votre plateforme de livraison</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a asp-action="CreateLivreur" class="btn btn-light btn-sm">
+                                    <i class="fas fa-user-plus me-2"></i>Nouveau Livreur
+                                </a>
+                                <a asp-action="CreateClient" class="btn btn-light btn-sm">
+                                    <i class="fas fa-user-plus me-2"></i>Nouveau Client
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-secondary text-white">
+    <!-- Messages de succès/erreur -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Cartes de statistiques principales -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Livreurs</h5>
-                    <h2 class="card-text">@Model.TotalLivreurs</h2>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                                <i class="fas fa-box fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Total Colis</h6>
+                            <h3 class="fw-bold mb-0 text-primary">@Model.TotalColis</h3>
+                            <small class="text-success">
+                                <i class="fas fa-arrow-up me-1"></i>+12% ce mois
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                                <i class="fas fa-truck fa-2x text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">En Cours</h6>
+                            <h3 class="fw-bold mb-0 text-warning">@Model.ColisEnCours</h3>
+                            <small class="text-info">
+                                <i class="fas fa-clock me-1"></i>En livraison
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Livrés</h6>
+                            <h3 class="fw-bold mb-0 text-success">@Model.ColisLivres</h3>
+                            <small class="text-success">
+                                <i class="fas fa-arrow-up me-1"></i>+8% ce mois
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-opacity-10 rounded-circle p-3">
+                                <i class="fas fa-users fa-2x text-info"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Clients</h6>
+                            <h3 class="fw-bold mb-0 text-info">@Model.TotalClients</h3>
+                            <small class="text-success">
+                                <i class="fas fa-arrow-up me-1"></i>+5% ce mois
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cartes de statistiques secondaires -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-secondary bg-opacity-10 rounded-circle p-3">
+                                <i class="fas fa-user-tie fa-2x text-secondary"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Livreurs</h6>
+                            <h3 class="fw-bold mb-0 text-secondary">@Model.TotalLivreurs</h3>
+                            <small class="text-info">
+                                <i class="fas fa-user-check me-1"></i>Actifs
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                                <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Retardés</h6>
+                            <h3 class="fw-bold mb-0 text-danger">@(Model.ColisParStatut.FirstOrDefault(s => s.Statut == "Retardé")?.Count ?? 0)</h3>
+                            <small class="text-warning">
+                                <i class="fas fa-clock me-1"></i>À traiter
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                                <i class="fas fa-euro-sign fa-2x text-success"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Chiffre d'Affaires</h6>
+                            <h3 class="fw-bold mb-0 text-success">€0</h3>
+                            <small class="text-success">
+                                <i class="fas fa-arrow-up me-1"></i>Ce mois
+                            </small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,30 +201,41 @@
     <!-- Actions rapides -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Actions rapides</h5>
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt text-warning me-2"></i>
+                        Actions Rapides
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <a asp-action="CreateLivreur" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-user-plus"></i> Créer un livreur
+                    <div class="row g-3">
+                        <div class="col-lg-3 col-md-6">
+                            <a asp-action="CreateLivreur" class="btn btn-primary w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 border-0 shadow-sm">
+                                <i class="fas fa-user-plus fa-2x mb-2"></i>
+                                <span class="fw-bold">Créer un Livreur</span>
+                                <small class="text-light">Ajouter un nouveau livreur</small>
                             </a>
                         </div>
-                        <div class="col-md-3">
-                            <a asp-action="CreateClient" class="btn btn-success btn-lg w-100">
-                                <i class="fas fa-user-plus"></i> Créer un client
+                        <div class="col-lg-3 col-md-6">
+                            <a asp-action="CreateClient" class="btn btn-success w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 border-0 shadow-sm">
+                                <i class="fas fa-user-plus fa-2x mb-2"></i>
+                                <span class="fw-bold">Créer un Client</span>
+                                <small class="text-light">Ajouter un nouveau client</small>
                             </a>
                         </div>
-                        <div class="col-md-3">
-                            <a asp-action="Livreurs" class="btn btn-info btn-lg w-100">
-                                <i class="fas fa-users"></i> Gérer les livreurs
+                        <div class="col-lg-3 col-md-6">
+                            <a asp-action="Livreurs" class="btn btn-info w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 border-0 shadow-sm">
+                                <i class="fas fa-users fa-2x mb-2"></i>
+                                <span class="fw-bold">Gérer les Livreurs</span>
+                                <small class="text-light">Voir tous les livreurs</small>
                             </a>
                         </div>
-                        <div class="col-md-3">
-                            <a asp-action="Clients" class="btn btn-warning btn-lg w-100">
-                                <i class="fas fa-users"></i> Gérer les clients
+                        <div class="col-lg-3 col-md-6">
+                            <a asp-action="Clients" class="btn btn-warning w-100 h-100 d-flex flex-column align-items-center justify-content-center p-3 border-0 shadow-sm">
+                                <i class="fas fa-users fa-2x mb-2"></i>
+                                <span class="fw-bold">Gérer les Clients</span>
+                                <small class="text-light">Voir tous les clients</small>
                             </a>
                         </div>
                     </div>
@@ -97,41 +244,59 @@
         </div>
     </div>
 
-    <!-- Statistiques par statut -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Colis par statut</h5>
+    <!-- Graphiques et tableaux -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie text-primary me-2"></i>
+                        Répartition des Colis par Statut
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="statutChart" width="400" height="200"></canvas>
+                    <canvas id="statutChart" height="300"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Répartition des colis</h5>
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-table text-success me-2"></i>
+                        Détails par Statut
+                    </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
                                 <tr>
-                                    <th>Statut</th>
-                                    <th>Nombre</th>
-                                    <th>Pourcentage</th>
+                                    <th class="border-0">Statut</th>
+                                    <th class="border-0 text-end">Nombre</th>
+                                    <th class="border-0 text-end">%</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var statut in Model.ColisParStatut)
                                 {
-                                    var pourcentage = Model.TotalColis > 0 ? (statut.Count * 100.0 / Model.TotalColis).ToString("F1") : "0";
+                                    var pourcentage = Model.TotalColis > 0 ? (statut.Count * 100.0 / Model.TotalColis) : 0;
+                                    var colorClass = statut.Statut switch
+                                    {
+                                        "Livré" => "text-success",
+                                        "En cours" => "text-warning",
+                                        "Retardé" => "text-danger",
+                                        "En attente" => "text-info",
+                                        _ => "text-secondary"
+                                    };
                                     <tr>
-                                        <td>@statut.Statut</td>
-                                        <td>@statut.Count</td>
-                                        <td>@pourcentage%</td>
+                                        <td class="border-0">
+                                            <i class="fas fa-circle @colorClass me-2"></i>
+                                            @statut.Statut
+                                        </td>
+                                        <td class="border-0 text-end fw-bold">@statut.Count</td>
+                                        <td class="border-0 text-end text-muted">@pourcentage.ToString("F1")%</td>
                                     </tr>
                                 }
                             </tbody>
@@ -143,6 +308,46 @@
     </div>
 </div>
 
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-purple {
+    background-color: #6f42c1 !important;
+}
+
+.text-purple {
+    color: #6f42c1 !important;
+}
+
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.rounded-circle {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .rounded-circle {
+    transform: scale(1.1);
+}
+</style>
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -152,7 +357,7 @@
         
         var labels = statutData.map(item => item.statut);
         var data = statutData.map(item => item.count);
-        var colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d'];
+        var colors = ['#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6c757d'];
 
         new Chart(ctx, {
             type: 'doughnut',
@@ -161,14 +366,28 @@
                 datasets: [{
                     data: data,
                     backgroundColor: colors,
-                    borderWidth: 2
+                    borderWidth: 3,
+                    borderColor: '#fff'
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                elements: {
+                    arc: {
+                        borderWidth: 2
                     }
                 }
             }

@@ -2,37 +2,227 @@
 @{
     ViewData["Title"] = "Mes Colis";
 }
-<h2>Mes Colis</h2>
-<p>
-    <a class="btn btn-success" asp-action="Create">Créer un colis</a>
-    <a class="btn btn-info" asp-action="Notifications">Voir mes notifications</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Description</th>
-            <th>Statut</th>
-            <th>Date</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-boxes"></i> Mes Colis</h2>
+        <div>
+            <a class="btn btn-success me-2" asp-action="Create">
+                <i class="fas fa-plus"></i> Créer un colis
+            </a>
+            <a class="btn btn-info" asp-action="Notifications">
+                <i class="fas fa-bell"></i> Notifications
+            </a>
+        </div>
+    </div>
+
+    <!-- Messages de succès/erreur -->
+    @if (TempData["Success"] != null)
     {
-        <tr>
-            <td>@item.Description</td>
-            <td>@item.Statut</td>
-            <td>@item.DateEnvoi</td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Détails</a>
-                @if (item.Statut == "En attente" || item.Statut == "En cours")
-                {
-                    <form asp-action="Annuler" asp-route-id="@item.Id" method="post" style="display:inline">
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Annuler ce colis ?');">Annuler</button>
-                    </form>
-                }
-            </td>
-        </tr>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
-    </tbody>
-</table> 
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">Aucun colis trouvé</h4>
+                    <p class="text-muted">Vous n'avez pas encore créé de colis.</p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Créer votre premier colis
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Statistiques rapides -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Total</h6>
+                                <h3>@Model.Count()</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-boxes fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">En attente</h6>
+                                <h3>@Model.Count(c => c.Statut == "En attente")</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">En cours</h6>
+                                <h3>@Model.Count(c => c.Statut == "En cours")</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-truck fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Livrés</h6>
+                                <h3>@Model.Count(c => c.Statut == "Livré")</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des colis -->
+        <div class="row">
+            @foreach (var item in Model.OrderByDescending(c => c.DateEnvoi))
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header @GetStatusColor(item.Statut)">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 text-white">
+                                    <i class="fas fa-box"></i> Colis #@item.Id
+                                </h6>
+                                <span class="badge bg-light text-dark">@item.Statut</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                <strong>Description:</strong><br>
+                                @(string.IsNullOrEmpty(item.Description) ? "Aucune description" : item.Description)
+                            </p>
+                            
+                            <div class="row text-muted small mb-3">
+                                <div class="col-6">
+                                    <i class="fas fa-calendar"></i> @item.DateEnvoi?.ToString("dd/MM/yyyy")
+                                </div>
+                                <div class="col-6">
+                                    <i class="fas fa-clock"></i> @item.DateEnvoi?.ToString("HH:mm")
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(item.AdresseDepart) || !string.IsNullOrEmpty(item.AdresseArrivee))
+                            {
+                                <div class="mb-3">
+                                    @if (!string.IsNullOrEmpty(item.AdresseDepart))
+                                    {
+                                        <div class="small text-muted mb-1">
+                                            <i class="fas fa-map-marker-alt text-success"></i> 
+                                            <strong>Départ:</strong> @item.AdresseDepart
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(item.AdresseArrivee))
+                                    {
+                                        <div class="small text-muted">
+                                            <i class="fas fa-flag-checkered text-warning"></i> 
+                                            <strong>Arrivée:</strong> @item.AdresseArrivee
+                                        </div>
+                                    }
+                                </div>
+                            }
+
+                            @if (item.LivreurId.HasValue)
+                            {
+                                <div class="alert alert-info small mb-3">
+                                    <i class="fas fa-user"></i> 
+                                    <strong>Livreur assigné:</strong> ID #@item.LivreurId
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-eye"></i> Détails
+                                </a>
+                                
+                                @if (item.Statut == "En attente" || item.Statut == "En cours")
+                                {
+                                    <form asp-action="Annuler" asp-route-id="@item.Id" method="post" style="display:inline">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                                onclick="return confirm('Êtes-vous sûr de vouloir annuler ce colis ?');">
+                                            <i class="fas fa-times"></i> Annuler
+                                        </button>
+                                    </form>
+                                }
+                                
+                                @if (item.Statut == "Annulé")
+                                {
+                                    <div class="btn-group" role="group">
+                                        <form asp-action="RemettreEnCours" asp-route-id="@item.Id" method="post" style="display:inline">
+                                            <button type="submit" class="btn btn-outline-warning btn-sm" 
+                                                    onclick="return confirm('Êtes-vous sûr de vouloir remettre ce colis en cours ?');">
+                                                <i class="fas fa-redo"></i> Remettre en cours
+                                            </button>
+                                        </form>
+                                        <form asp-action="Supprimer" asp-route-id="@item.Id" method="post" style="display:inline">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer définitivement ce colis ? Cette action est irréversible.');">
+                                                <i class="fas fa-trash"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetStatusColor(string statut)
+    {
+        return statut switch
+        {
+            "En attente" => "bg-warning",
+            "En cours" => "bg-info",
+            "Livré" => "bg-success",
+            "Annulé" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+} 

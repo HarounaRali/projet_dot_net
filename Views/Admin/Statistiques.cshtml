@@ -3,208 +3,266 @@
     ViewData["Title"] = "Statistiques Détaillées";
 }
 
-<div class="container-fluid">
-    <h2 class="mb-4">
-        <i class="fas fa-chart-bar"></i> Statistiques Détaillées
-    </h2>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="display-6 fw-bold mb-1">
+                        <i class="fas fa-chart-bar text-primary me-2"></i>
+                        Statistiques Détaillées
+                    </h1>
+                    <p class="text-muted mb-0">Analyse complète des performances de votre plateforme</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Cartes de statistiques principales -->
-    <div class="row mb-4">
-        <div class="col-md-2">
-            <div class="card bg-primary text-white">
-                <div class="card-body text-center">
-                    <h4>@Model.TotalColis</h4>
-                    <small>Total Colis</small>
+    <div class="row g-4 mb-4">
+        <div class="col-xl-2 col-lg-4 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="fas fa-box fa-2x text-primary"></i>
+                    </div>
+                    <h3 class="fw-bold text-primary mb-1">@Model.TotalColis</h3>
+                    <p class="text-muted mb-0">Total Colis</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="card bg-warning text-white">
-                <div class="card-body text-center">
-                    <h4>@Model.ColisEnAttente</h4>
-                    <small>En Attente</small>
+        <div class="col-xl-2 col-lg-4 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="fas fa-clock fa-2x text-warning"></i>
+                    </div>
+                    <h3 class="fw-bold text-warning mb-1">@Model.ColisEnAttente</h3>
+                    <p class="text-muted mb-0">En Attente</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="card bg-info text-white">
-                <div class="card-body text-center">
-                    <h4>@Model.ColisEnCours</h4>
-                    <small>En Cours</small>
+        <div class="col-xl-2 col-lg-4 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="fas fa-truck fa-2x text-info"></i>
+                    </div>
+                    <h3 class="fw-bold text-info mb-1">@Model.ColisEnCours</h3>
+                    <p class="text-muted mb-0">En Cours</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="card bg-success text-white">
-                <div class="card-body text-center">
-                    <h4>@Model.ColisLivres</h4>
-                    <small>Livrés</small>
+        <div class="col-xl-2 col-lg-4 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="fas fa-check-circle fa-2x text-success"></i>
+                    </div>
+                    <h3 class="fw-bold text-success mb-1">@Model.ColisLivres</h3>
+                    <p class="text-muted mb-0">Livrés</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="card bg-secondary text-white">
-                <div class="card-body text-center">
-                    <h4>@Model.TotalClients</h4>
-                    <small>Clients</small>
+        <div class="col-xl-2 col-lg-4 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-secondary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="fas fa-users fa-2x text-secondary"></i>
+                    </div>
+                    <h3 class="fw-bold text-secondary mb-1">@Model.TotalClients</h3>
+                    <p class="text-muted mb-0">Clients</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="card bg-dark text-white">
-                <div class="card-body text-center">
-                    <h4>@Model.TotalLivreurs</h4>
-                    <small>Livreurs</small>
+        <div class="col-xl-2 col-lg-4 col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center p-4">
+                    <div class="bg-dark bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                        <i class="fas fa-user-tie fa-2x text-dark"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark mb-1">@Model.TotalLivreurs</h3>
+                    <p class="text-muted mb-0">Livreurs</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Graphiques -->
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-chart-pie"></i> Répartition des colis par statut</h5>
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-pie text-primary me-2"></i>
+                        Répartition des colis par statut
+                    </h5>
                 </div>
-                <div class="card-body">
-                    <canvas id="statutChart" width="400" height="300"></canvas>
+                <div class="card-body p-4">
+                    <canvas id="statutChart" height="300"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-chart-line"></i> Évolution des colis par mois</h5>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line text-success me-2"></i>
+                        Évolution des colis par mois
+                    </h5>
                 </div>
-                <div class="card-body">
-                    <canvas id="evolutionChart" width="400" height="300"></canvas>
+                <div class="card-body p-4">
+                    <canvas id="evolutionChart" height="300"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Top livreurs -->
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-trophy"></i> Top 5 des livreurs les plus performants</h5>
+    <!-- Top livreurs et informations -->
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-trophy text-warning me-2"></i>
+                        Top 5 des livreurs les plus performants
+                    </h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     @if (Model.TopLivreurs != null && Model.TopLivreurs.Count > 0)
                     {
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Rang</th>
-                                        <th>Livreur</th>
-                                        <th>Colis livrés</th>
-                                        <th>Performance</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @{
-                                        int rang = 1;
-                                        int maxColis = 0;
-                                        foreach (var livreur in Model.TopLivreurs)
+                        <div class="space-y-3">
+                            @{
+                                int rang = 1;
+                                int maxColis = Model.TopLivreurs.Max(l => l.ColisLivres);
+                            }
+                            @foreach (var livreur in Model.TopLivreurs)
+                            {
+                                var pourcentage = maxColis > 0 ? (livreur.ColisLivres * 100.0 / maxColis) : 0;
+                                <div class="d-flex align-items-center p-3 bg-light rounded">
+                                    <div class="flex-shrink-0 me-3">
+                                        @if (rang == 1)
                                         {
-                                            if (livreur.ColisLivres > maxColis)
-                                            {
-                                                maxColis = livreur.ColisLivres;
-                                            }
+                                            <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <span class="fw-bold text-white">🥇</span>
+                                            </div>
                                         }
-                                    }
-                                    @foreach (var livreur in Model.TopLivreurs)
-                                    {
-                                        var pourcentage = maxColis > 0 ? (livreur.ColisLivres * 100.0 / maxColis) : 0;
-                                        <tr>
-                                            <td>
-                                                @if (rang == 1)
-                                                {
-                                                    <span class="badge bg-warning">🥇</span>
-                                                }
-                                                else if (rang == 2)
-                                                {
-                                                    <span class="badge bg-secondary">🥈</span>
-                                                }
-                                                else if (rang == 3)
-                                                {
-                                                    <span class="badge bg-warning">🥉</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-light text-dark">@rang</span>
-                                                }
-                                            </td>
-                                            <td><strong>@livreur.Nom</strong></td>
-                                            <td>@livreur.ColisLivres</td>
-                                            <td>
-                                                <div class="progress" style="height: 20px;">
-                                                    <div class="progress-bar bg-success" style="width: @pourcentage%">
-                                                        @pourcentage.ToString("F0")%
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        rang++;
-                                    }
-                                </tbody>
-                            </table>
+                                        else if (rang == 2)
+                                        {
+                                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <span class="fw-bold text-white">🥈</span>
+                                            </div>
+                                        }
+                                        else if (rang == 3)
+                                        {
+                                            <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <span class="fw-bold text-white">🥉</span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <span class="fw-bold text-dark">@rang</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="fw-bold mb-1">@livreur.Nom</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="text-muted">@livreur.ColisLivres colis livrés</span>
+                                            <span class="fw-bold text-success">@pourcentage.ToString("F0")%</span>
+                                        </div>
+                                        <div class="progress mt-2" style="height: 8px;">
+                                            <div class="progress-bar bg-success" style="width: @pourcentage%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                rang++;
+                            }
                         </div>
                     }
                     else
                     {
-                        <div class="text-center py-4">
+                        <div class="text-center py-5">
                             <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Aucune donnée disponible</h5>
                             <p class="text-muted">Aucune donnée disponible pour les livreurs</p>
                         </div>
                     }
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-info-circle"></i> Informations</h5>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-light border-0">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle text-info me-2"></i>
+                        Indicateurs clés
+                    </h5>
                 </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <h6>Taux de livraison</h6>
-                        @{
-                            var tauxLivraison = Model.TotalColis > 0 ? (Model.ColisLivres * 100.0 / Model.TotalColis) : 0;
-                        }
-                        <div class="progress mb-2">
-                            <div class="progress-bar bg-success" style="width: @tauxLivraison%">
-                                @tauxLivraison.ToString("F1")%
+                <div class="card-body p-4">
+                    <div class="space-y-4">
+                        <div>
+                            <h6 class="fw-bold mb-2">Taux de livraison</h6>
+                            @{
+                                var tauxLivraison = Model.TotalColis > 0 ? (Model.ColisLivres * 100.0 / Model.TotalColis) : 0;
+                            }
+                            <div class="progress mb-2" style="height: 10px;">
+                                <div class="progress-bar bg-success" style="width: @tauxLivraison%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">@Model.ColisLivres livrés</small>
+                                <small class="fw-bold text-success">@tauxLivraison.ToString("F1")%</small>
                             </div>
                         </div>
-                        <small class="text-muted">@Model.ColisLivres livrés sur @Model.TotalColis colis</small>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <h6>Colis en attente</h6>
-                        @{
-                            var tauxAttente = Model.TotalColis > 0 ? (Model.ColisEnAttente * 100.0 / Model.TotalColis) : 0;
-                        }
-                        <div class="progress mb-2">
-                            <div class="progress-bar bg-warning" style="width: @tauxAttente%">
-                                @tauxAttente.ToString("F1")%
+                        
+                        <div>
+                            <h6 class="fw-bold mb-2">Colis en attente</h6>
+                            @{
+                                var tauxAttente = Model.TotalColis > 0 ? (Model.ColisEnAttente * 100.0 / Model.TotalColis) : 0;
+                            }
+                            <div class="progress mb-2" style="height: 10px;">
+                                <div class="progress-bar bg-warning" style="width: @tauxAttente%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">@Model.ColisEnAttente colis</small>
+                                <small class="fw-bold text-warning">@tauxAttente.ToString("F1")%</small>
                             </div>
                         </div>
-                        <small class="text-muted">@Model.ColisEnAttente colis en attente</small>
-                    </div>
 
-                    <div class="alert alert-info">
-                        <i class="fas fa-lightbulb"></i>
-                        <strong>Conseil :</strong> Surveillez régulièrement les colis en attente pour optimiser la livraison.
+                        <div class="alert alert-info border-0">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            <strong>Conseil :</strong> Surveillez régulièrement les colis en attente pour optimiser la livraison.
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12) !important;
+}
+.space-y-3 > * + * {
+    margin-top: 1rem;
+}
+.space-y-4 > * + * {
+    margin-top: 1.5rem;
+}
+.progress {
+    border-radius: 1rem;
+}
+.alert {
+    border-radius: 1rem;
+}
+</style>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -218,14 +276,28 @@
                 datasets: [{
                     data: [@Model.ColisEnAttente, @Model.ColisEnCours, @Model.ColisLivres],
                     backgroundColor: ['#ffc107', '#17a2b8', '#28a745'],
-                    borderWidth: 2
+                    borderWidth: 3,
+                    borderColor: '#fff'
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                elements: {
+                    arc: {
+                        borderWidth: 2
                     }
                 }
             }
@@ -248,12 +320,18 @@
                         data: data,
                         borderColor: '#007bff',
                         backgroundColor: 'rgba(0, 123, 255, 0.1)',
-                        tension: 0.1,
-                        fill: true
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#007bff',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: false
@@ -261,7 +339,15 @@
                     },
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
                         }
                     }
                 }

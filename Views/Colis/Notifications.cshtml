@@ -2,21 +2,142 @@
 @{
     ViewData["Title"] = "Mes Notifications";
 }
-<h2>Mes Notifications</h2>
-@if (!Model.Any())
-{
-    <p>Aucune notification pour le moment.</p>
-}
-else
-{
-    <ul class="list-group">
-    @foreach (var notif in Model)
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-bell"></i> Mes Notifications</h2>
+        <a asp-action="MesColis" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Retour à mes colis
+        </a>
+    </div>
+
+    @if (!Model.Any())
     {
-        <li class="list-group-item">
-            <strong>@notif.Message</strong> <br />
-            <small>@notif.DateEnvoi</small>
-        </li>
+        <div class="text-center py-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <i class="fas fa-bell-slash fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">Aucune notification</h4>
+                    <p class="text-muted">Vous n'avez pas encore reçu de notifications.</p>
+                    <a asp-action="MesColis" class="btn btn-primary">
+                        <i class="fas fa-boxes"></i> Voir mes colis
+                    </a>
+                </div>
+            </div>
+        </div>
     }
-    </ul>
-}
-<a asp-action="MesColis" class="btn btn-secondary">Retour à mes colis</a> 
+    else
+    {
+        <!-- Statistiques -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Total</h6>
+                                <h3>@Model.Count()</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-bell fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Aujourd'hui</h6>
+                                <h3>@Model.Count(n => n.DateEnvoi.Date == DateTime.Today)</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-calendar-day fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title">Cette semaine</h6>
+                                <h3>@Model.Count(n => n.DateEnvoi >= DateTime.Today.AddDays(-7))</h3>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-calendar-week fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des notifications -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Historique des Notifications</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="timeline">
+                    @foreach (var notif in Model.OrderByDescending(n => n.DateEnvoi))
+                    {
+                        <div class="timeline-item">
+                            <div class="timeline-marker @GetNotificationColor(notif.DateEnvoi)"></div>
+                            <div class="timeline-content">
+                                <div class="card border-0 bg-light mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <p class="mb-1 fw-bold">@notif.Message</p>
+                                                <div class="d-flex align-items-center text-muted small">
+                                                    <i class="fas fa-clock me-2"></i>
+                                                    <span>@notif.DateEnvoi.ToString("dd/MM/yyyy à HH:mm")</span>
+                                                    @if (notif.DateEnvoi.Date == DateTime.Today)
+                                                    {
+                                                        <span class="badge bg-success ms-2">Aujourd'hui</span>
+                                                    }
+                                                    else if (notif.DateEnvoi.Date == DateTime.Today.AddDays(-1))
+                                                    {
+                                                        <span class="badge bg-info ms-2">Hier</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="ms-3">
+                                                @if (notif.ColisId != 0)
+                                                {
+                                                    <a href="@Url.Action("Details", "Colis", new { id = notif.ColisId })" 
+                                                       class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-eye"></i> Voir le colis
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetNotificationColor(DateTime dateEnvoi)
+    {
+        if (dateEnvoi.Date == DateTime.Today)
+            return "bg-success";
+        else if (dateEnvoi.Date == DateTime.Today.AddDays(-1))
+            return "bg-info";
+        else if (dateEnvoi.Date >= DateTime.Today.AddDays(-7))
+            return "bg-warning";
+        else
+            return "bg-secondary";
+    }
+} 

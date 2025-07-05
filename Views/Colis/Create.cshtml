@@ -2,59 +2,162 @@
 @{
     ViewData["Title"] = "Créer un Colis";
 }
-<h2>Créer un Colis</h2>
-<div asp-validation-summary="All" class="text-danger"></div>
-<form asp-action="Create" method="post" onsubmit="return validateLatLng();">
-    <div class="form-group">
-        <label asp-for="Description" class="control-label"></label>
-        <input asp-for="Description" class="form-control" />
-        <span asp-validation-for="Description" class="text-danger"></span>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-box"></i> Créer un Nouveau Colis</h2>
+                <a asp-action="MesColis" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à mes colis
+                </a>
+            </div>
+
+            <!-- Messages d'erreur -->
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+            <form asp-action="Create" method="post" onsubmit="return validateLatLng();">
+                <div class="row">
+                    <!-- Informations du colis -->
+                    <div class="col-md-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informations du Colis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Description" class="form-label fw-bold">
+                                        <i class="fas fa-tag"></i> Description du colis
+                                    </label>
+                                    <textarea asp-for="Description" class="form-control" rows="4" 
+                                              placeholder="Décrivez le contenu de votre colis..."></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="HeureLivraisonEstimee" class="form-label fw-bold">
+                                        <i class="fas fa-clock"></i> Heure de livraison souhaitée
+                                    </label>
+                                    <input type="datetime-local" class="form-control" id="HeureLivraisonEstimee" 
+                                           name="HeureLivraisonEstimee" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Point de départ -->
+                    <div class="col-md-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Point de Départ</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-3">
+                                    <label for="AdresseDepart" class="form-label fw-bold">
+                                        <i class="fas fa-search"></i> Adresse de départ
+                                    </label>
+                                    <input type="text" class="form-control" id="AdresseDepart" name="AdresseDepart" 
+                                           placeholder="Saisir l'adresse ou utiliser la carte" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-map"></i> Sélectionner sur la carte
+                                    </label>
+                                    <div id="mapDepart" style="height: 250px; border-radius: 8px;"></div>
+                                    <input type="hidden" id="LatitudeDepart" name="LatitudeDepart" value="@(Model?.LatitudeDepart ?? 0)" />
+                                    <input type="hidden" id="LongitudeDepart" name="LongitudeDepart" value="@(Model?.LongitudeDepart ?? 0)" />
+                                    
+                                    <div class="mt-2">
+                                        <button type="button" onclick="getLocationDepart()" class="btn btn-outline-success btn-sm">
+                                            <i class="fas fa-location-arrow"></i> Ma position actuelle
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="form-label fw-bold">Latitude</label>
+                                        <input type="number" step="any" class="form-control" id="LatitudeDepartManual" 
+                                               name="LatitudeDepartManual" value="@(Model?.LatitudeDepart ?? 0)" />
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label fw-bold">Longitude</label>
+                                        <input type="number" step="any" class="form-control" id="LongitudeDepartManual" 
+                                               name="LongitudeDepartManual" value="@(Model?.LongitudeDepart ?? 0)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Point d'arrivée -->
+                    <div class="col-md-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0"><i class="fas fa-flag-checkered"></i> Point d'Arrivée</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-3">
+                                    <label for="AdresseArrivee" class="form-label fw-bold">
+                                        <i class="fas fa-search"></i> Adresse d'arrivée
+                                    </label>
+                                    <input type="text" class="form-control" id="AdresseArrivee" name="AdresseArrivee" 
+                                           placeholder="Saisir l'adresse ou utiliser la carte" />
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="fas fa-map"></i> Sélectionner sur la carte
+                                    </label>
+                                    <div id="mapArrivee" style="height: 250px; border-radius: 8px;"></div>
+                                    <input type="hidden" id="LatitudeArrivee" name="LatitudeArrivee" value="@(Model?.LatitudeArrivee ?? 0)" />
+                                    <input type="hidden" id="LongitudeArrivee" name="LongitudeArrivee" value="@(Model?.LongitudeArrivee ?? 0)" />
+                                    
+                                    <div class="mt-2">
+                                        <button type="button" onclick="getLocationArrivee()" class="btn btn-outline-warning btn-sm">
+                                            <i class="fas fa-location-arrow"></i> Ma position actuelle
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="form-label fw-bold">Latitude</label>
+                                        <input type="number" step="any" class="form-control" id="LatitudeArriveeManual" 
+                                               name="LatitudeArriveeManual" value="@(Model?.LatitudeArrivee ?? 0)" />
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label fw-bold">Longitude</label>
+                                        <input type="number" step="any" class="form-control" id="LongitudeArriveeManual" 
+                                               name="LongitudeArriveeManual" value="@(Model?.LongitudeArrivee ?? 0)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-body text-center">
+                                <button type="submit" class="btn btn-primary btn-lg me-3">
+                                    <i class="fas fa-plus"></i> Créer le Colis
+                                </button>
+                                <a asp-action="MesColis" class="btn btn-secondary btn-lg">
+                                    <i class="fas fa-times"></i> Annuler
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-    <hr />
-    <h4>Point de départ</h4>
-    <div class="form-group">
-        <label for="AdresseDepart">Adresse de départ (optionnel)</label>
-        <input type="text" class="form-control" id="AdresseDepart" name="AdresseDepart" placeholder="Saisir l'adresse ou laisser vide pour utiliser la carte" />
-    </div>
-    <div class="form-group">
-        <label>Ou cliquez sur la carte :</label>
-        <div id="mapDepart" style="height: 200px;"></div>
-        <input type="hidden" id="LatitudeDepart" name="LatitudeDepart" value="@(Model?.LatitudeDepart ?? 0)" />
-        <input type="hidden" id="LongitudeDepart" name="LongitudeDepart" value="@(Model?.LongitudeDepart ?? 0)" />
-        <button type="button" onclick="getLocationDepart()" class="btn btn-outline-secondary mt-2">Utiliser ma position actuelle</button>
-    </div>
-    <div class="form-group">
-        <label>Latitude départ</label>
-        <input type="number" step="any" class="form-control" id="LatitudeDepartManual" name="LatitudeDepartManual" value="@(Model?.LatitudeDepart ?? 0)" />
-    </div>
-    <div class="form-group">
-        <label>Longitude départ</label>
-        <input type="number" step="any" class="form-control" id="LongitudeDepartManual" name="LongitudeDepartManual" value="@(Model?.LongitudeDepart ?? 0)" />
-    </div>
-    <hr />
-    <h4>Point d'arrivée</h4>
-    <div class="form-group">
-        <label for="AdresseArrivee">Adresse d'arrivée (optionnel)</label>
-        <input type="text" class="form-control" id="AdresseArrivee" name="AdresseArrivee" placeholder="Saisir l'adresse ou laisser vide pour utiliser la carte" />
-    </div>
-    <div class="form-group">
-        <label>Ou cliquez sur la carte :</label>
-        <div id="mapArrivee" style="height: 200px;"></div>
-        <input type="hidden" id="LatitudeArrivee" name="LatitudeArrivee" value="@(Model?.LatitudeArrivee ?? 0)" />
-        <input type="hidden" id="LongitudeArrivee" name="LongitudeArrivee" value="@(Model?.LongitudeArrivee ?? 0)" />
-        <button type="button" onclick="getLocationArrivee()" class="btn btn-outline-secondary mt-2">Utiliser ma position actuelle</button>
-    </div>
-    <div class="form-group">
-        <label>Latitude arrivée</label>
-        <input type="number" step="any" class="form-control" id="LatitudeArriveeManual" name="LatitudeArriveeManual" value="@(Model?.LatitudeArrivee ?? 0)" />
-    </div>
-    <div class="form-group">
-        <label>Longitude arrivée</label>
-        <input type="number" step="any" class="form-control" id="LongitudeArriveeManual" name="LongitudeArriveeManual" value="@(Model?.LongitudeArrivee ?? 0)" />
-    </div>
-    <button type="submit" class="btn btn-primary">Créer</button>
-    <a asp-action="MesColis" class="btn btn-secondary">Retour</a>
-</form>
+</div>
+
 @section Scripts {
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -73,6 +176,7 @@
         document.getElementById('LatitudeDepartManual').value = e.latlng.lat;
         document.getElementById('LongitudeDepartManual').value = e.latlng.lng;
     });
+    
     function getLocationDepart() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -90,12 +194,14 @@
             alert('La géolocalisation n\'est pas supportée par ce navigateur.');
         }
     }
+    
     document.getElementById('LatitudeDepartManual').addEventListener('input', function() {
         document.getElementById('LatitudeDepart').value = this.value;
     });
     document.getElementById('LongitudeDepartManual').addEventListener('input', function() {
         document.getElementById('LongitudeDepart').value = this.value;
     });
+    
     // Carte arrivée
     var mapArrivee = L.map('mapArrivee').setView([18.0735, -15.9582], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -110,6 +216,7 @@
         document.getElementById('LatitudeArriveeManual').value = e.latlng.lat;
         document.getElementById('LongitudeArriveeManual').value = e.latlng.lng;
     });
+    
     function getLocationArrivee() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function(position) {
@@ -127,24 +234,17 @@
             alert('La géolocalisation n\'est pas supportée par ce navigateur.');
         }
     }
+    
     document.getElementById('LatitudeArriveeManual').addEventListener('input', function() {
         document.getElementById('LatitudeArrivee').value = this.value;
     });
     document.getElementById('LongitudeArriveeManual').addEventListener('input', function() {
         document.getElementById('LongitudeArrivee').value = this.value;
     });
-    // Validation JS simple
+    
+    // Validation JS simplifiée
     function validateLatLng() {
-        var latDep = parseFloat(document.getElementById('LatitudeDepart').value);
-        var lngDep = parseFloat(document.getElementById('LongitudeDepart').value);
-        var latArr = parseFloat(document.getElementById('LatitudeArrivee').value);
-        var lngArr = parseFloat(document.getElementById('LongitudeArrivee').value);
-        if (isNaN(latDep) || isNaN(lngDep) || latDep < -90 || latDep > 90 || lngDep < -180 || lngDep > 180 ||
-            isNaN(latArr) || isNaN(lngArr) || latArr < -90 || latArr > 90 || lngArr < -180 || lngArr > 180) {
-            alert("Veuillez sélectionner des positions valides sur la carte ou saisir des coordonnées valides.");
-            return false;
-        }
-        return true;
+        return true; // Pas de validation côté client
     }
     </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

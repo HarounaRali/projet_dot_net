@@ -3,73 +3,125 @@
     ViewData["Title"] = "Créer un Client";
 }
 
-<div class="container">
+<div class="container-fluid py-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title mb-0">
-                        <i class="fas fa-user-plus"></i> Créer un nouveau client
-                    </h3>
+        <div class="col-lg-8 col-xl-6">
+            <!-- Header -->
+            <div class="text-center mb-4">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                    <i class="fas fa-user-plus fa-2x text-primary"></i>
                 </div>
-                <div class="card-body">
-                    <form asp-action="CreateClient" method="post">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <h1 class="display-6 fw-bold mb-2">Créer un nouveau client</h1>
+                <p class="text-muted">Ajoutez un nouveau client à votre plateforme de livraison</p>
+            </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="Nom" class="form-label">Nom complet *</label>
-                                    <input asp-for="Nom" class="form-control" placeholder="Nom et prénom du client" />
-                                    <span asp-validation-for="Nom" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="Telephone" class="form-label">Téléphone *</label>
-                                    <input asp-for="Telephone" class="form-control" placeholder="06 12 34 56 78" />
-                                    <span asp-validation-for="Telephone" class="text-danger"></span>
-                                </div>
-                            </div>
+            <!-- Formulaire -->
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-4 p-lg-5">
+                    <form asp-action="CreateClient" method="post" id="createClientForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger border-0 shadow-sm" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Erreurs de validation :</strong>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label">Adresse email *</label>
-                            <input asp-for="Email" type="email" class="form-control" placeholder="client@example.com" />
-                            <div class="form-text">Cette adresse servira de nom d'utilisateur pour la connexion.</div>
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-
-                        <div class="row">
+                        <!-- Informations personnelles -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="fw-bold mb-3">
+                                    <i class="fas fa-user text-primary me-2"></i>
+                                    Informations personnelles
+                                </h5>
+                            </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="Password" class="form-label">Mot de passe *</label>
-                                    <input asp-for="Password" type="password" class="form-control" placeholder="Mot de passe" />
-                                    <div class="form-text">Minimum 6 caractères</div>
-                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Nom" class="form-control" id="nomInput" placeholder="Nom complet" />
+                                    <label asp-for="Nom" for="nomInput">
+                                        <i class="fas fa-user me-2"></i>Nom complet *
+                                    </label>
+                                    <span asp-validation-for="Nom" class="text-danger small"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="ConfirmPassword" class="form-label">Confirmer le mot de passe *</label>
-                                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirmer le mot de passe" />
-                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Telephone" class="form-control" id="telephoneInput" placeholder="Téléphone" />
+                                    <label asp-for="Telephone" for="telephoneInput">
+                                        <i class="fas fa-phone me-2"></i>Téléphone *
+                                    </label>
+                                    <span asp-validation-for="Telephone" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle"></i>
-                            <strong>Information :</strong> Un compte utilisateur sera automatiquement créé avec le rôle "Client". 
-                            Le client pourra se connecter immédiatement avec l'email et le mot de passe fournis.
+                        <!-- Informations de connexion -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="fw-bold mb-3">
+                                    <i class="fas fa-lock text-primary me-2"></i>
+                                    Informations de connexion
+                                </h5>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Email" type="email" class="form-control" id="emailInput" placeholder="Email" />
+                                    <label asp-for="Email" for="emailInput">
+                                        <i class="fas fa-envelope me-2"></i>Adresse email *
+                                    </label>
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Cette adresse servira de nom d'utilisateur pour la connexion
+                                    </div>
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Password" type="password" class="form-control" id="passwordInput" placeholder="Mot de passe" />
+                                    <label asp-for="Password" for="passwordInput">
+                                        <i class="fas fa-key me-2"></i>Mot de passe *
+                                    </label>
+                                    <div class="form-text">
+                                        <i class="fas fa-shield-alt me-1"></i>
+                                        Minimum 6 caractères
+                                    </div>
+                                    <span asp-validation-for="Password" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="confirmPasswordInput" placeholder="Confirmer le mot de passe" />
+                                    <label asp-for="ConfirmPassword" for="confirmPasswordInput">
+                                        <i class="fas fa-check-double me-2"></i>Confirmer le mot de passe
+                                    </label>
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <a asp-action="Clients" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Retour à la liste
+                        <!-- Information importante -->
+                        <div class="alert alert-info border-0 shadow-sm mb-4">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-info-circle fa-2x text-info"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="alert-heading fw-bold">Information importante</h6>
+                                    <p class="mb-0">
+                                        Un compte utilisateur sera automatiquement créé avec le rôle "Client". 
+                                        Le client pourra se connecter immédiatement avec l'email et le mot de passe fournis.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-between">
+                            <a asp-action="Clients" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Retour à la liste
                             </a>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-save"></i> Créer le client
+                            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                <i class="fas fa-save me-2"></i>
+                                Créer le client
                             </button>
                         </div>
                     </form>
